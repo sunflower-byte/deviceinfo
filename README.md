@@ -7,8 +7,8 @@ github: git@github.com:sunflower-byte/deviceinfo.git
 
 1、属性数据：
 DevicePropertyManager 类用来获取属性数据。
- Map<String, String> getProperty() 获取属性数据。
- void exportProperty(String path) 导出属性数据。
+Map<String, String> getProperty() 获取属性数据。
+void exportProperty(String path) 导出属性数据。
  
 2、基站数据获取
 DeviceCellinfoManager类用来获取基站信息。
