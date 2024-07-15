@@ -1,17 +1,8 @@
 package com.android.deviceinfo.property;
 
-import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-
-import androidx.core.content.ContextCompat;
 
 import java.util.HashMap;
 import java.util.Map;

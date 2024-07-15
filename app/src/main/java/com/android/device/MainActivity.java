@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private void initViewPager() {
         mMainViewPager = findViewById(R.id.main_viewpager);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        AddFragment(new OverviewFragment());
         AddFragment(new PropertyFragment());
         AddFragment(new SensorFragment());
         AddFragment(new CellinfoFragment());
-        AddFragment(new OverviewFragment());
         mMainViewPager.setAdapter(mViewPagerAdapter);
         initTitles();
         mMainViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
