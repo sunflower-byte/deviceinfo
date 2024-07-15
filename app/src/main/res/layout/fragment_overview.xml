@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gray">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       android:layout_marginLeft="10dp"
+       android:layout_marginRight="10dp"
+       android:layout_marginTop="10dp"
+       android:background="@color/white">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <TextView
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="品牌:"
+               android:textSize="12sp"
+               android:textColor="@color/black"/>
+           <TextView
+               android:id="@+id/brand"
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:textSize="12sp"
+               android:maxLines="1"
+               android:textColor="@color/black"/>
+       </LinearLayout>
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="3dp"/>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <TextView
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="设备型号:"
+               android:textSize="12sp"
+               android:textColor="@color/black"/>
+           <TextView
+               android:id="@+id/model"
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:textSize="12sp"
+               android:maxLines="1"
+               android:textColor="@color/black"/>
+       </LinearLayout>
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="3dp"/>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <TextView
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="aosp版本:"
+               android:textSize="12sp"
+               android:textColor="@color/black"/>
+           <TextView
+               android:id="@+id/aosp_version"
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:textSize="12sp"
+               android:maxLines="1"
+               android:textColor="@color/black"/>
+       </LinearLayout>
+
+   </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/white">
+
+        <ListView
+            android:id="@+id/capture_result_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="10sp"
+            android:text="传感器采样间隔(毫秒)20-200毫秒:"/>
+        <EditText
+            android:id="@+id/sensor_capture_frequency"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:text="20"
+            android:inputType="numberDecimal"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="10sp"
+            android:text="传感器采集时长(秒)最大1200秒:"/>
+        <EditText
+            android:id="@+id/sensor_capture_duration"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:text="100"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <android.widget.Button
+            android:id="@+id/start_capture"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="开始采集"/>
+
+        <android.widget.Button
+            android:id="@+id/stop_capture"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="停止采集"/>
+
+    </LinearLayout>
+
+</LinearLayout>
