@@ -20,10 +20,3 @@ DeviceSensorManager类用来获取传感器数据。
 boolean register(Sensor sensor, SensorEventListener listener) 注册回调获取某个传感器的数据。
 boolean unregister(Sensor sensor, SensorEventListener listener) 停止获取某个传感器的数据。
 void startCapture(int period, int duration, String path, SensorCaptureListener listener) 采集已经注册的传感器数据，path为保存路径。可以设置采集的间隔和采集时长，当采集完成时，通过SensorCaptureListener通知上层。
-
-##### 需要的权限
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-    tools:ignore="CoarseFineLocation" />
