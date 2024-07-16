@@ -1,5 +1,5 @@
 ### 项目概况
-设备信息是一个获取android设备信息的测试程序，如属性，基站信息，传感器信息。[ ][enter]
+设备信息是一个获取android设备信息的测试程序，如属性，基站信息，传感器信息。 
 github: git@github.com:sunflower-byte/deviceinfo.git[ ][enter]
 
 ### 快速入门
