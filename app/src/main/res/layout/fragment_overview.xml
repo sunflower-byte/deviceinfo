@@ -22,14 +22,14 @@
                android:layout_width="0dp"
                android:layout_height="wrap_content"
                android:text="品牌:"
-               android:textSize="12sp"
+               android:textSize="14sp"
                android:textColor="@color/black"/>
            <TextView
                android:id="@+id/brand"
                android:layout_weight="1"
                android:layout_width="0dp"
                android:layout_height="wrap_content"
-               android:textSize="12sp"
+               android:textSize="14sp"
                android:maxLines="1"
                android:textColor="@color/black"/>
        </LinearLayout>
@@ -46,14 +46,14 @@
                android:layout_width="0dp"
                android:layout_height="wrap_content"
                android:text="设备型号:"
-               android:textSize="12sp"
+               android:textSize="14sp"
                android:textColor="@color/black"/>
            <TextView
                android:id="@+id/model"
                android:layout_weight="1"
                android:layout_width="0dp"
                android:layout_height="wrap_content"
-               android:textSize="12sp"
+               android:textSize="14sp"
                android:maxLines="1"
                android:textColor="@color/black"/>
        </LinearLayout>
@@ -70,14 +70,14 @@
                android:layout_width="0dp"
                android:layout_height="wrap_content"
                android:text="aosp版本:"
-               android:textSize="12sp"
+               android:textSize="14sp"
                android:textColor="@color/black"/>
            <TextView
                android:id="@+id/aosp_version"
                android:layout_weight="1"
                android:layout_width="0dp"
                android:layout_height="wrap_content"
-               android:textSize="12sp"
+               android:textSize="14sp"
                android:maxLines="1"
                android:textColor="@color/black"/>
        </LinearLayout>

@@ -19,7 +19,7 @@ public class PropertyFragment extends BaseFragment {
     @Override
     protected void initView(View view, Bundle savedInstanceState) {
         mListView = view.findViewById(R.id.lv_property);
-        initListview();
+        setupListview();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class PropertyFragment extends BaseFragment {
         return mName;
     }
 
-    private void initListview() {
+    private void setupListview() {
         ArrayList<String> arrayList = new ArrayList<>();
         DevicePropertyManager propertyManager = DeviceManager.getInstance().getDeviceProperty();
         Map<String, String> properties = propertyManager.getProperty();

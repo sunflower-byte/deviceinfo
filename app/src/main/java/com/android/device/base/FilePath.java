@@ -15,12 +15,17 @@ public class FilePath {
     }
 
     public static String getPropertyPath() {
-        String file = "phone.prop";
+        String file = "device.prop";
         return getStoragePath() + "/" + file;
     }
 
     public static String getCellinfoPath() {
         String file = "cellinfo";
+        return getStoragePath() + "/" + file;
+    }
+
+    public static String getCpuinfoPath() {
+        String file = "cpuinfo";
         return getStoragePath() + "/" + file;
     }
 }

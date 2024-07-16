@@ -111,7 +111,7 @@ public class SensorFragment extends BaseFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
+            ViewHolder holder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.sensor_item, null);
                 holder = new ViewHolder(convertView);

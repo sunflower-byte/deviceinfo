@@ -22,10 +22,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.android.device.base.DeviceManager;
 import com.android.device.databinding.ActivityMainBinding;
 import com.android.device.fragment.BaseFragment;
+import com.android.device.fragment.CellinfoFragment;
+import com.android.device.fragment.CpuFragment;
 import com.android.device.fragment.OverviewFragment;
 import com.android.device.fragment.PropertyFragment;
 import com.android.device.fragment.SensorFragment;
-import com.android.device.fragment.CellinfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         AddFragment(new PropertyFragment());
         AddFragment(new SensorFragment());
         AddFragment(new CellinfoFragment());
+        AddFragment(new CpuFragment());
         mMainViewPager.setAdapter(mViewPagerAdapter);
         initTitles();
         mMainViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

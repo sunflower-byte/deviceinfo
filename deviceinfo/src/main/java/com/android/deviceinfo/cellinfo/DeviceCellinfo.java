@@ -17,8 +17,10 @@ import android.telephony.CellInfoNr;
 import android.telephony.CellInfoTdscdma;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellSignalStrengthCdma;
+import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
 import android.telephony.CellSignalStrengthNr;
+import android.telephony.CellSignalStrengthTdscdma;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -54,41 +56,60 @@ public class DeviceCellinfo {
                 cellinfoMap.put("mcc", String.valueOf(cellInfoGsm.getCellIdentity().getMcc()));
                 cellinfoMap.put("mnc", String.valueOf(cellInfoGsm.getCellIdentity().getMnc()));
                 cellinfoMap.put("ss", String.valueOf(cellInfoGsm.getCellSignalStrength()));
+
+                CellSignalStrengthGsm cellSignalStrengthGsm = cellInfoGsm.getCellSignalStrength();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     cellinfoMap.put("status", String.valueOf(cellInfoGsm.getCellConnectionStatus()));
                     cellinfoMap.put("alphal", String.valueOf(cellInfoGsm.getCellIdentity().getOperatorAlphaLong()));
                     cellinfoMap.put("alphas", String.valueOf(cellInfoGsm.getCellIdentity().getOperatorAlphaShort()));
+                    cellinfoMap.put("ta", String.valueOf(cellSignalStrengthGsm.getTimingAdvance()));
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    cellinfoMap.put("ber", String.valueOf(cellSignalStrengthGsm.getBitErrorRate()));
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    cellinfoMap.put("rssi", String.valueOf(cellSignalStrengthGsm.getRssi()));
                 }
             } else if (cellInfo instanceof CellInfoLte) {
                 CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
                 CellIdentityLte cellIdentityLte = cellInfoLte.getCellIdentity();
                 cellinfoMap.put("type", String.valueOf(3));
-                cellinfoMap.put("registerrd", String.valueOf(cellInfoLte.isRegistered() ? 1 : 0));
-                cellinfoMap.put("mcc", String.valueOf(cellIdentityLte.getMcc()));
-                cellinfoMap.put("mnc", String.valueOf(cellIdentityLte.getMnc()));
+                cellinfoMap.put("registered", String.valueOf(cellInfoLte.isRegistered() ? 1 : 0));
                 cellinfoMap.put("ci", String.valueOf(cellIdentityLte.getCi()));
                 cellinfoMap.put("pci", String.valueOf(cellIdentityLte.getPci()));
                 cellinfoMap.put("tac", String.valueOf(cellIdentityLte.getTac()));
                 cellinfoMap.put("earfcn", String.valueOf(cellIdentityLte.getEarfcn()));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    cellinfoMap.put("bandwidth", String.valueOf(cellIdentityLte.getBandwidth()));
+                }
+                cellinfoMap.put("mcc", String.valueOf(cellIdentityLte.getMcc()));
+                cellinfoMap.put("mnc", String.valueOf(cellIdentityLte.getMnc()));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     cellinfoMap.put("alphal", String.valueOf(cellIdentityLte.getOperatorAlphaLong()));
                     cellinfoMap.put("alphas", String.valueOf(cellIdentityLte.getOperatorAlphaShort()));
                 }
                 CellSignalStrengthLte cellSignalStrengthLte = (CellSignalStrengthLte) cellInfoLte.getCellSignalStrength();
-                cellinfoMap.put("rsrp", String.valueOf(cellSignalStrengthLte.getRsrp()));
-                cellinfoMap.put("rsrq", String.valueOf(cellSignalStrengthLte.getRsrq()));
-                cellinfoMap.put("rssnr", String.valueOf(cellSignalStrengthLte.getRssnr()));
-                cellinfoMap.put("cqi", String.valueOf(cellSignalStrengthLte.getCqi()));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    cellinfoMap.put("rsrp", String.valueOf(cellSignalStrengthLte.getRsrp()));
+                    cellinfoMap.put("rsrq", String.valueOf(cellSignalStrengthLte.getRsrq()));
+                    cellinfoMap.put("rssnr", String.valueOf(cellSignalStrengthLte.getRssnr()));
+                    cellinfoMap.put("cqi", String.valueOf(cellSignalStrengthLte.getCqi()));
+                    cellinfoMap.put("ta", String.valueOf(cellSignalStrengthLte.getTimingAdvance()));
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    cellinfoMap.put("rssi", String.valueOf(cellSignalStrengthLte.getRssi()));
+                }
             } else if (cellInfo instanceof CellInfoWcdma) {
                 CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfo;
                 CellIdentityWcdma cellIdentityWcdma = (CellIdentityWcdma) cellInfoWcdma.getCellIdentity();
                 cellinfoMap.put("type", String.valueOf(4));
-                cellinfoMap.put("registerrd", String.valueOf(cellInfoWcdma.isRegistered() ? 1 : 0));
+                cellinfoMap.put("registered", String.valueOf(cellInfoWcdma.isRegistered() ? 1 : 0));
                 cellinfoMap.put("lac", String.valueOf(cellIdentityWcdma.getLac()));
                 cellinfoMap.put("cid", String.valueOf(cellIdentityWcdma.getCid()));
-                cellinfoMap.put("mcc", String.valueOf(cellIdentityWcdma.getMcc()));
                 cellinfoMap.put("psc", String.valueOf(cellIdentityWcdma.getPsc()));
                 cellinfoMap.put("uarfcn", String.valueOf(cellIdentityWcdma.getUarfcn()));
+                cellinfoMap.put("mcc", String.valueOf(cellIdentityWcdma.getMcc()));
+                cellinfoMap.put("mnc", String.valueOf(cellIdentityWcdma.getMnc()));
                 cellinfoMap.put("ss", String.valueOf(cellInfoWcdma.getCellSignalStrength()));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     cellinfoMap.put("alphal", String.valueOf(cellIdentityWcdma.getOperatorAlphaLong()));
@@ -124,7 +145,13 @@ public class DeviceCellinfo {
                 cellinfoMap.put("pci", String.valueOf(cellIdentityNr.getPci()));
                 cellinfoMap.put("tac", String.valueOf(cellIdentityNr.getTac()));
                 cellinfoMap.put("nrArfcn", String.valueOf(cellIdentityNr.getNrarfcn()));
+                cellinfoMap.put("mcc", cellIdentityNr.getMccString());
+                cellinfoMap.put("mnc", cellIdentityNr.getMncString());
                 cellinfoMap.put("nci", String.valueOf(cellIdentityNr.getNci()));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    cellinfoMap.put("alphal", String.valueOf(cellIdentityNr.getOperatorAlphaLong()));
+                    cellinfoMap.put("alphas", String.valueOf(cellIdentityNr.getOperatorAlphaShort()));
+                }
                 CellSignalStrengthNr cellSignalStrengthNr = (CellSignalStrengthNr) cellInfoNr.getCellSignalStrength();
                 cellinfoMap.put("csiRsrp", String.valueOf(cellSignalStrengthNr.getCsiRsrp()));
                 cellinfoMap.put("csiRsrq", String.valueOf(cellSignalStrengthNr.getCsiRsrq()));
@@ -138,7 +165,18 @@ public class DeviceCellinfo {
                 cellinfoMap.put("type", String.valueOf(5));
                 cellinfoMap.put("registered", String.valueOf(cellInfoTdscdma.isRegistered() ? 1 : 0));
                 cellinfoMap.put("status", String.valueOf(cellInfoTdscdma.getCellConnectionStatus()));
+                cellinfoMap.put("mcc", cellIdentityTdscdma.getMccString());
+                cellinfoMap.put("mnc", cellIdentityTdscdma.getMncString());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    cellinfoMap.put("alphal", String.valueOf(cellIdentityTdscdma.getOperatorAlphaLong()));
+                    cellinfoMap.put("alphas", String.valueOf(cellIdentityTdscdma.getOperatorAlphaShort()));
+                }
+                cellinfoMap.put("lac", String.valueOf(cellIdentityTdscdma.getLac()));
+                cellinfoMap.put("cid", String.valueOf(cellIdentityTdscdma.getCid()));
                 cellinfoMap.put("cpid", String.valueOf(cellIdentityTdscdma.getCpid()));
+                cellinfoMap.put("uarfcn", String.valueOf(cellIdentityTdscdma.getCpid()));
+                CellSignalStrengthTdscdma cellSignalStrengthTdscdma = cellInfoTdscdma.getCellSignalStrength();
+                cellinfoMap.put("rscp", String.valueOf(cellSignalStrengthTdscdma.getRscp()));
             }
             if (!cellinfoMap.isEmpty()) {
                 break;

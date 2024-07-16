@@ -16,6 +16,7 @@ import com.android.device.R;
 import com.android.device.base.DeviceManager;
 import com.android.device.base.FilePath;
 import com.android.deviceinfo.cellinfo.DeviceCellinfoManager;
+import com.android.deviceinfo.cpu.DeviceCpu;
 import com.android.deviceinfo.property.DevicePropertyManager;
 import com.android.deviceinfo.sensor.DeviceSensorManager;
 import com.android.deviceinfo.sensor.SensorCaptureListener;
@@ -36,6 +37,7 @@ public class OverviewFragment extends BaseFragment {
     private static final int CAPTURE_PROPERTY_SUCCESS = 0;
     private static final int CAPTURE_CELLINFO_SUCCESS = 1;
     private static final int CAPTURE_SENSOR_SUCCESS = 2;
+    private static final int CAPTURE_CPUINFO_SUCCESS = 3;
 
     private final String mName = "概览";
     private ListView mCaptureStateListView = null;
@@ -105,11 +107,12 @@ public class OverviewFragment extends BaseFragment {
         mCaptreuInfos.add(new CaptureInfo("传感器", FilePath.getSensorPath()));
         mCaptreuInfos.add(new CaptureInfo("基站信息", FilePath.getCellinfoPath()));
         mCaptreuInfos.add(new CaptureInfo("属性", FilePath.getPropertyPath()));
+        mCaptreuInfos.add(new CaptureInfo("cpuifo", FilePath.getCpuinfoPath()));
     }
 
     private void startCpautre() {
         int sensorFrequency = Integer.valueOf(mCaptureFrequency.getText().toString());
-        int sensorCaptureDuration = Integer.valueOf(mCaptureFrequency.getText().toString());
+        int sensorCaptureDuration = Integer.valueOf(mCaptureDuration.getText().toString());
         if (sensorFrequency < 20 || sensorFrequency > 200 || sensorCaptureDuration > 1200) {
             Toast.makeText(getActivity(), "频率20-200毫秒,时长小于20分钟", Toast.LENGTH_SHORT).show();
             return;
@@ -129,6 +132,9 @@ public class OverviewFragment extends BaseFragment {
                     DeviceCellinfoManager deviceCellinfo = DeviceManager.getInstance().getDeviceCellinfo();
                     deviceCellinfo.exportCellinfo(FilePath.getCellinfoPath());
                     subscriber.onNext(CAPTURE_CELLINFO_SUCCESS);
+                    DeviceCpu deviceCpu = new DeviceCpu();
+                    deviceCpu.exportCpuinfo(FilePath.getCpuinfoPath());
+                    subscriber.onNext(CAPTURE_CPUINFO_SUCCESS);
                 } catch (IOException e) {
                     e.printStackTrace();
                     subscriber.onError(new Exception("capture failed."));
@@ -170,6 +176,8 @@ public class OverviewFragment extends BaseFragment {
                     Toast.makeText(getContext(), "cellinfo采集完成", Toast.LENGTH_SHORT).show();
                 } else if (integer == CAPTURE_SENSOR_SUCCESS) {
                     Toast.makeText(getContext(), "传感器采集完成", Toast.LENGTH_SHORT).show();
+                } else if (integer == CAPTURE_CPUINFO_SUCCESS) {
+                    Toast.makeText(getContext(), "cpuinfo采集完成", Toast.LENGTH_SHORT).show();
                 }
             }
         };
