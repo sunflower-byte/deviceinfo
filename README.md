@@ -24,4 +24,4 @@ void startCapture(int period, int duration, String path, SensorCaptureListener l
 /storage/emulated/0/device/device.prop 属性文件保存的路径  
 /storage/emulated/0/device/sensor.db 传感器数据保存的路径  
 /storage/emulated/0/device/cellinfo 基站信息保存的路径  
-/storage/emulated/0/device/cpuinfo cpu文件保存的路径  
+/storage/emulated/0/device/cpuinfo cpu信息保存的路径  
