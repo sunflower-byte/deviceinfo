@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public class FilePath {
     public static String getStoragePath() {
-        String dir = "phone";
+        String dir = "device";
         String externalPath = Environment.getExternalStorageDirectory().getPath();
         return externalPath + "/" + dir;
     }
