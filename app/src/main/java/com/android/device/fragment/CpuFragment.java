@@ -5,14 +5,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.device.R;
-import com.android.deviceinfo.cpu.DeviceCpu;
+import com.android.deviceinfo.cpu.DeviceCpuManager;
 
 public class CpuFragment extends BaseFragment {
     private final String mName = "CPU";
 
     @Override
     protected void initView(View view, Bundle savedInstanceState) {
-        DeviceCpu deviceCpu = new DeviceCpu();
+        DeviceCpuManager deviceCpu = new DeviceCpuManager();
         String cpuinfo = deviceCpu.getCpuInfo();
         TextView textView = view.findViewById(R.id.cpuinfo);
         textView.setText(cpuinfo);

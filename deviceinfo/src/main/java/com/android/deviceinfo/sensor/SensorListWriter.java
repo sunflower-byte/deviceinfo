@@ -47,10 +47,13 @@ public class SensorListWriter {
         int reportMode = 0;
         switch (sensor.getReportingMode()) {
             case Sensor.REPORTING_MODE_CONTINUOUS:
+                reportMode = 0x0;
                 break;
             case Sensor.REPORTING_MODE_ON_CHANGE:
+                reportMode = 0x2;
                 break;
             case Sensor.REPORTING_MODE_ONE_SHOT:
+                reportMode = 0x4;
                 break;
             case Sensor.REPORTING_MODE_SPECIAL_TRIGGER:
             default:

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         super.onCreate(savedInstanceState);
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initDevice();
         initViewPager();
         processPermission();
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void initDevice() {
-        DeviceManager.getInstance().initDevice(this);
+        DeviceManager.getInstance().initDevice(getApplicationContext());
     }
 
     @AfterPermissionGranted(PERMISSION_REQUEST_CODE)

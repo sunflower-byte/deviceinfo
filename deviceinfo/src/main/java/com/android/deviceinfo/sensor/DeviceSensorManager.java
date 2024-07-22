@@ -3,9 +3,9 @@ package com.android.deviceinfo.sensor;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,9 +28,8 @@ public class DeviceSensorManager {
     private String mPath = null;
     private SensorTimer mSensorTimer;
     private SensorTimerListener mSensorTimerListener;
-    private SensorEventAssemble mEventAssemble = null;
-    private Object mLock = new Object();
     private SensorCaptureListener mCaptureListenser;
+    private SensorCapture mSensorCapturer;
 
     public DeviceSensorManager(@NonNull Context context) {
         mContext = context;
@@ -42,6 +40,7 @@ public class DeviceSensorManager {
         mSensorTimerListener = new SensorTimerListener();
         mCaptureListenser = null;
         mCaptureList = null;
+        mSensorCapturer = new SensorCapture();
     }
 
     public List<Sensor> getSensorList() {
@@ -52,6 +51,7 @@ public class DeviceSensorManager {
         if (isAlreadyRegister(sensor)) {
             return false;
         }
+        Log.i(TAG, "register sensor " + sensor.getStringType());
         mSensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         mRegisterList.add(sensor);
         return true;
@@ -61,6 +61,7 @@ public class DeviceSensorManager {
         if (!isAlreadyRegister(sensor)) {
             return false;
         }
+        Log.i(TAG, "unregister sensor " + sensor.getStringType());
         mSensorManager.unregisterListener(listener, sensor);
         mRegisterList.remove(sensor);
         return true;
@@ -71,25 +72,20 @@ public class DeviceSensorManager {
         mInterval = period;
         mCaptureListenser = listener;
 
-        try {
-            Files.deleteIfExists(Paths.get(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        synchronized (mLock) {
-            mCaptureList = new ArrayList<>(mRegisterList);
-            for (Sensor sensor : mCaptureList) {
-                mSensorManager.registerListener(mEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (mPath != null) {
+            try {
+                Files.deleteIfExists(Paths.get(mPath));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            mEventAssemble = new SensorEventAssemble(mCaptureList);
         }
+        mCaptureList = new ArrayList<>(mRegisterList);
+        mSensorCapturer.startCapture(mCaptureList, mSensorManager);
         mSensorTimer.start(mSensorTimerListener, period, duration);
     }
 
     public void stopCapture() {
-        for (Sensor sensor : mCaptureList) {
-            mSensorManager.unregisterListener(mEventListener, sensor);
-        }
+        mSensorCapturer.stopCaputre();
         mSensorTimer.forcestop();
         mCaptureList.clear();
     }
@@ -98,30 +94,11 @@ public class DeviceSensorManager {
         return  mRegisterList.contains(sensor);
     }
 
-    private SensorEventListener mEventListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent sensorEvent) {
-            synchronized (mLock) {
-                if (mEventAssemble != null) {
-                    SensorEventData eventData = new SensorEventData();
-                    eventData.values = Arrays.copyOf(sensorEvent.values, sensorEvent.values.length);
-                    mEventAssemble.addEvent(sensorEvent.sensor.getType(), eventData);
-                }
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int i) {
-
-        }
-    };
 
     private class SensorTimerListener implements SensorTimer.SensorTimerListener {
         @Override
         public void onTimer() {
-            if (mEventAssemble != null) {
-                mEventAssemble.refresh();
-            }
+            mSensorCapturer.refresh();;
         }
 
         @Override
@@ -132,14 +109,12 @@ public class DeviceSensorManager {
                 SQLiteDatabase db = dbHelper.getDatabase();
                 SensorListWriter sensorListWriter = new SensorListWriter();
                 sensorListWriter.write(mSensorList, db, mInterval);
-                SensorDataWriter sensorDataWriter = new SensorDataWriter();
-                sensorDataWriter.write(mSensorList, db, mEventAssemble);
+                SensorDataWriter sensorDataWriter = new SensorDataWriter(db);
+                mSensorCapturer.cloectData(sensorDataWriter);
+                db.close();
             }
             if (mCaptureListenser != null) {
                 mCaptureListenser.onFinishCapture();
-            }
-            synchronized (mLock) {
-                mEventAssemble = null;
             }
         }
     }

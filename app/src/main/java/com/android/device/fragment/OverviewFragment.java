@@ -16,7 +16,7 @@ import com.android.device.R;
 import com.android.device.base.DeviceManager;
 import com.android.device.base.FilePath;
 import com.android.deviceinfo.cellinfo.DeviceCellinfoManager;
-import com.android.deviceinfo.cpu.DeviceCpu;
+import com.android.deviceinfo.cpu.DeviceCpuManager;
 import com.android.deviceinfo.property.DevicePropertyManager;
 import com.android.deviceinfo.sensor.DeviceSensorManager;
 import com.android.deviceinfo.sensor.SensorCaptureListener;
@@ -48,6 +48,7 @@ public class OverviewFragment extends BaseFragment {
     private boolean mCaptureFlag = false;
     private EditText mCaptureFrequency = null;
     private EditText mCaptureDuration = null;
+    private ViewGroup mCaptureProgressViews = null;
 
     public OverviewFragment() {
         initCaptureRecord();
@@ -62,6 +63,7 @@ public class OverviewFragment extends BaseFragment {
         TextView aospVersion = view.findViewById(R.id.aosp_version);
         aospVersion.setText(Build.VERSION.RELEASE);
 
+        mCaptureProgressViews = view.findViewById(R.id.capture_progress);
         mCaptureFrequency = view.findViewById(R.id.sensor_capture_frequency);
         mCaptureDuration = view.findViewById(R.id.sensor_capture_duration);
         mCaptureStateListView = view.findViewById(R.id.capture_result_listView);
@@ -81,6 +83,9 @@ public class OverviewFragment extends BaseFragment {
             }
         });
         updateCaptureState();
+        if (mCaptureFlag) {
+            mCaptureProgressViews.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -121,6 +126,7 @@ public class OverviewFragment extends BaseFragment {
             Toast.makeText(getContext(), "正在采集", Toast.LENGTH_SHORT).show();
             return;
         }
+        mCaptureProgressViews.setVisibility(View.VISIBLE);
         mCaptureFlag = true;
         Observable<Integer> observable = Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
@@ -132,7 +138,7 @@ public class OverviewFragment extends BaseFragment {
                     DeviceCellinfoManager deviceCellinfo = DeviceManager.getInstance().getDeviceCellinfo();
                     deviceCellinfo.exportCellinfo(FilePath.getCellinfoPath());
                     subscriber.onNext(CAPTURE_CELLINFO_SUCCESS);
-                    DeviceCpu deviceCpu = new DeviceCpu();
+                    DeviceCpuManager deviceCpu = new DeviceCpuManager();
                     deviceCpu.exportCpuinfo(FilePath.getCpuinfoPath());
                     subscriber.onNext(CAPTURE_CPUINFO_SUCCESS);
                 } catch (IOException e) {
@@ -157,7 +163,7 @@ public class OverviewFragment extends BaseFragment {
 
             @Override
             public void onCompleted() {
-                Toast.makeText(getContext(), "采集结束", Toast.LENGTH_SHORT).show();
+                mCaptureProgressViews.setVisibility(View.GONE);
                 mCaptureFlag = false;
             }
 

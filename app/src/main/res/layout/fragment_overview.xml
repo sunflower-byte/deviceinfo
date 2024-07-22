@@ -164,4 +164,26 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/capture_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/capture_progress_bar"
+            style="@android:style/Widget.ProgressBar.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="采集中..."
+            android:textColor="@color/black"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
 </LinearLayout>
