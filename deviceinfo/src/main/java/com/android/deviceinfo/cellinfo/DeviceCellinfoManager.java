@@ -38,7 +38,8 @@ public class DeviceCellinfoManager {
             String value = entry.getValue();
             content.append(key)
                    .append("=")
-                   .append(value);
+                   .append(value)
+                   .append(",");
         }
         content.append("\n");
         writer.write(content.toString());
