@@ -22,7 +22,7 @@ boolean unregister(Sensor sensor, SensorEventListener listener) 停止获取某�
 void startCapture(int period, int duration, String path, SensorCaptureListener listener) 采集已经注册的传感器数据，path为保存路径。可以设置采集的间隔和采集时长，当采集完成时，通过SensorCaptureListener通知上层。  
 
 ##### 4、cpu数据获取  
-DeviceCpuManager类用来获取cpu信息。 
+DeviceCpuManager类用来获取cpu信息。  
 void exportCpuinfo(String path)  导出cpu信息到文件中。 
 
 ##### 5、点击app中的开始采集按钮，采集数据保存外部存储中创建的device路径下，不同手机存在差异，有的不包含0：  
