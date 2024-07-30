@@ -41,6 +41,9 @@ public class SensorHelper implements SensorEventListener {
     public void refreshList() {
         synchronized (this) {
             mValuesList.add(mValues);
+            if (mSensor.getReportingMode() != Sensor.REPORTING_MODE_CONTINUOUS) {
+                mValues = null;
+            }
         }
     }
 

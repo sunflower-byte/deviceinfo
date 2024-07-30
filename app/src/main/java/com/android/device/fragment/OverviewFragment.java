@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.device.R;
-import com.android.device.base.DeviceManager;
 import com.android.device.base.FilePath;
+import com.android.device.base.SensorWrap;
 import com.android.deviceinfo.cellinfo.DeviceCellinfoManager;
 import com.android.deviceinfo.cpu.DeviceCpuManager;
 import com.android.deviceinfo.property.DevicePropertyManager;
@@ -82,10 +82,50 @@ public class OverviewFragment extends BaseFragment {
                 stopCapture();
             }
         });
-        updateCaptureState();
         if (mCaptureFlag) {
             mCaptureProgressViews.setVisibility(View.VISIBLE);
         }
+
+        mAdapter = new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return mCaptreuInfos.size();
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return mCaptreuInfos.get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup viewGroup) {
+                CaptureViewHolder holder;
+                View currentView;
+                if (convertView != null) {
+                    currentView = convertView;
+                    holder = (CaptureViewHolder) currentView.getTag();
+                } else {
+                    currentView = LayoutInflater.from(getContext()).inflate(R.layout.capturestate_item, null);
+                    holder = new CaptureViewHolder();
+                    holder.name = currentView.findViewById(R.id.name);
+                    holder.state = currentView.findViewById(R.id.state);
+                    currentView.setTag(holder);
+                }
+                holder.name.setText(mCaptreuInfos.get(position).name);
+                if (isFileExist(mCaptreuInfos.get(position).path)) {
+                    holder.state.setText("已采集");
+                } else {
+                    holder.state.setText("未采集");
+                }
+                return currentView;
+            }
+        };
+        mCaptureStateListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -132,10 +172,10 @@ public class OverviewFragment extends BaseFragment {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
                 try {
-                    DevicePropertyManager deviceProperty = DeviceManager.getInstance().getDeviceProperty();
+                    DevicePropertyManager deviceProperty = new DevicePropertyManager(getContext());
                     deviceProperty.exportProperty(FilePath.getPropertyPath());
                     subscriber.onNext(CAPTURE_PROPERTY_SUCCESS);
-                    DeviceCellinfoManager deviceCellinfo = DeviceManager.getInstance().getDeviceCellinfo();
+                    DeviceCellinfoManager deviceCellinfo = new DeviceCellinfoManager(getContext());
                     deviceCellinfo.exportCellinfo(FilePath.getCellinfoPath());
                     subscriber.onNext(CAPTURE_CELLINFO_SUCCESS);
                     DeviceCpuManager deviceCpu = new DeviceCpuManager();
@@ -146,7 +186,7 @@ public class OverviewFragment extends BaseFragment {
                     subscriber.onError(new Exception("capture failed."));
                     return;
                 }
-                DeviceSensorManager deviceSensor = DeviceManager.getInstance().getDeviceSensor();
+                DeviceSensorManager deviceSensor = SensorWrap.getInstance().getDeviceManager();
                 SensorCaptureListener listener = new SensorCaptureListener() {
                     @Override
                     public void onFinishCapture() {
@@ -170,6 +210,7 @@ public class OverviewFragment extends BaseFragment {
             @Override
             public void onError(Throwable e) {
                 Toast.makeText(getActivity(), "采集失败，请检查权限", Toast.LENGTH_SHORT).show();
+                mCaptureProgressViews.setVisibility(View.GONE);
                 mCaptureFlag = false;
             }
 
@@ -195,52 +236,9 @@ public class OverviewFragment extends BaseFragment {
 
     private void stopCapture() {
         if (mCaptureFlag) {
-            DeviceSensorManager deviceSensor = DeviceManager.getInstance().getDeviceSensor();
+            DeviceSensorManager deviceSensor = SensorWrap.getInstance().getDeviceManager();
             deviceSensor.stopCapture();
         }
-    }
-
-    private void updateCaptureState() {
-        mAdapter = new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return mCaptreuInfos.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return mCaptreuInfos.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                CaptureViewHolder holder;
-                View currentView;
-                if (convertView != null) {
-                    currentView = convertView;
-                    holder = (CaptureViewHolder) currentView.getTag();
-                } else {
-                    currentView = LayoutInflater.from(getContext()).inflate(R.layout.capturestate_item, null);
-                    holder = new CaptureViewHolder();
-                    holder.name = currentView.findViewById(R.id.name);
-                    holder.state = currentView.findViewById(R.id.state);
-                    currentView.setTag(holder);
-                }
-                holder.name.setText(mCaptreuInfos.get(position).name);
-                if (isFileExist(mCaptreuInfos.get(position).path)) {
-                    holder.state.setText("已采集");
-                } else {
-                    holder.state.setText("未采集");
-                }
-                return currentView;
-            }
-        };
-        mCaptureStateListView.setAdapter(mAdapter);
     }
 
     private class CaptureInfo {

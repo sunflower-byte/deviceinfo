@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.device.R;
 import com.android.device.base.SensorWrap;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,21 +30,9 @@ public class SensorFragment extends BaseFragment {
     private Handler mHandler = null;
     private Runnable mRunable = null;
     private boolean mStopRefresh = false;
-    private SensorWrap mSensorWrap;
-    private List<Boolean> mIsSelected;
 
     public SensorFragment() {
-        mSensorWrap = new SensorWrap();
-        mSensorList = mSensorWrap.getSensorList();
-        mIsSelected = new ArrayList<>();
-        for (int i = 0; i < mSensorList.size(); i++) {
-            if (mSensorList.get(i).getStringType() == "android.sensor.device_orientation") {
-                mIsSelected.add(false);
-                continue;
-            }
-            mIsSelected.add(true);
-            mSensorWrap.getSensorHelper(i).enable();
-        }
+        mSensorList = SensorWrap.getInstance().getSensorList();
     }
 
     @Override
@@ -58,8 +45,8 @@ public class SensorFragment extends BaseFragment {
             @Override
             public void run() {
                 if (!mStopRefresh) {
-                    mHandler.postDelayed(this, 500);
                     mAdapter.notifyDataSetChanged();
+                    mHandler.postDelayed(this, 500);
                 }
             }
         };
@@ -88,13 +75,11 @@ public class SensorFragment extends BaseFragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SensorWrap.SensorHealper sensorHealper = mSensorWrap.getSensorHelper(position);
-                if (mIsSelected.get(position)) {
-                    mIsSelected.set(position, false);
-                    sensorHealper.disable();
+                SensorWrap.SensorAssist sensorAssist = SensorWrap.getInstance().getSensorAssist(position);;
+                if (sensorAssist.isEnable()) {
+                    sensorAssist.disable();
                 } else {
-                    mIsSelected.set(position, true);
-                    sensorHealper.enable();
+                    sensorAssist.enable();
                 }
             }
         });
@@ -126,10 +111,10 @@ public class SensorFragment extends BaseFragment {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            SensorWrap.SensorHealper sensorHealper = mSensorWrap.getSensorHelper(position);
-            String string = Arrays.toString(sensorHealper.getValues());
+            SensorWrap.SensorAssist sensorAssist = SensorWrap.getInstance().getSensorAssist(position);
+            String string = Arrays.toString(sensorAssist.getValues());
             holder.sensor.setText(mSensorList.get(position).getName());
-            if (mIsSelected.get(position)) {
+            if (sensorAssist.isEnable()) {
                 holder.checkbox.setChecked(true);
                 holder.sensorData.setText(string);
             } else {

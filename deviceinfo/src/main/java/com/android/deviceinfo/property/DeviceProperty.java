@@ -1,8 +1,17 @@
 package com.android.deviceinfo.property;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -156,23 +165,56 @@ public class DeviceProperty {
         return properties;
     }
 
-    private String getAndroidID(Context context) {
-        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    private void getAndroidID(Context context, Map<String, String> properties) {
+        String androidID =  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        properties.put("android.id", androidID);
+    }
+
+    private void getWifiInfo(Context context, Map<String, String> properties) {
+        WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager == null) {
+            return;
+        }
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo.getSSID() != null && wifiInfo.getBSSID() != null) {
+            properties.put("sys.prop.writewifissid", wifiInfo.getSSID());
+            properties.put("ro.com.cph.mac_address", wifiInfo.getBSSID());
+            Log.i(TAG, "wifiInfo bssid = " + wifiInfo.getBSSID() + " ssid = " + wifiInfo.getSSID());
+        }
+    }
+
+    private void getBluetoothInfo(Context context, Map<String, String> properties) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q  && 
+		    ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT)
+                        != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        String address = bluetoothAdapter.getAddress();
+        String name = bluetoothAdapter.getName();
+        properties.put("com.cph.bluetooth_mac", address);
+        properties.put("com.cph.bluetooth_name", name);
+        Log.i(TAG, "bluetooth name = " + name + " address = " + address);
+    }
+
+    private void getImei(Context context, Map<String, String> properties) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q ||
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
+                        != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = telephonyManager.getDeviceId();
+        properties.put("sys.prop.writeimei", imei);
+        Log.i(TAG, "imei = " + imei);
     }
 
     public Map<String, String> getProperty(Context context) {
         Map<String, String> properties = getNormalProperties();
-        properties.put("android.id", getAndroidID(context));
+        getAndroidID(context, properties);
+        getWifiInfo(context, properties);
+        getBluetoothInfo(context, properties);
+        getImei(context, properties);
         return properties;
     }
-
-
-
-
-
-
-
-
-
-
 }

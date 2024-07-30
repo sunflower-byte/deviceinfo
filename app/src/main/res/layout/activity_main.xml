@@ -6,31 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:theme="@style/Theme.PhoneInfo.AppBarOverlay">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:id="@+id/toolbar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            android:background="?attr/colorPrimary"-->
-<!--            app:popupTheme="@style/Theme.PhoneInfo.PopupOverlay" />-->
-
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
-
-<!--    <include layout="@layout/content_main" />-->
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginEnd="@dimen/fab_margin"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        app:srcCompat="@android:drawable/ic_dialog_email" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,19 +18,17 @@
             android:text="设备信息"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:background="@color/blue"/>
+            android:background="@color/main"/>
 
-        <HorizontalScrollView
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:background="@color/blue">
-            <LinearLayout
-                android:id="@+id/nav_title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_gravity="bottom" />
-        </HorizontalScrollView>
+            android:layout_height="30dp"
+            android:background="@color/main"
+            app:tabIndicatorColor="@color/main"
+            app:tabSelectedTextColor="@color/main"
+            app:tabTextColor="@color/black"
+            app:tabBackground="@color/white"/>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/main_viewpager"

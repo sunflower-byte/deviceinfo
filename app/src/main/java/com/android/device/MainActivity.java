@@ -2,34 +2,22 @@ package com.android.device;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.device.base.DeviceManager;
+import com.android.device.base.SensorWrap;
 import com.android.device.databinding.ActivityMainBinding;
-import com.android.device.fragment.BaseFragment;
-import com.android.device.fragment.CellinfoFragment;
-import com.android.device.fragment.CpuFragment;
-import com.android.device.fragment.OverviewFragment;
-import com.android.device.fragment.PropertyFragment;
-import com.android.device.fragment.SensorFragment;
+import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -38,14 +26,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private List<String> mTitles = new ArrayList<String>();
-    private List<TextView> mTextViews = new ArrayList<>();
     private ViewPager mMainViewPager = null;
     private ViewPagerAdapter mViewPagerAdapter = null;
     private String[] mPermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.MANAGE_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_FINE_LOCATION};
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.READ_PHONE_STAT};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,76 +41,32 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        initDevice();
+        initSensor();
         initViewPager();
         processPermission();
+    }
+
+    @Override
+    protected void onDestroy() {
+        deinitSensor();
+        super.onDestroy();
     }
 
     private void initViewPager() {
         mMainViewPager = findViewById(R.id.main_viewpager);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        AddFragment(new OverviewFragment());
-        AddFragment(new PropertyFragment());
-        AddFragment(new SensorFragment());
-        AddFragment(new CellinfoFragment());
-        AddFragment(new CpuFragment());
         mMainViewPager.setAdapter(mViewPagerAdapter);
-        initTitles();
-        mMainViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                for (TextView textView : mTextViews) {
-                    textView.setTextColor(Color.WHITE);
-                }
-                mTextViews.get(position).setTextColor(Color.RED);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mMainViewPager);
     }
 
-    private void AddFragment(BaseFragment fragment) {
-        mViewPagerAdapter.addFragment(fragment);
-        mTitles.add(fragment.getName());
+    private void initSensor() {
+        SensorWrap.getInstance().init(getApplicationContext());
     }
 
-    private void initTitles() {
-        LinearLayout titleLayout = findViewById(R.id.nav_title);
-        int index = 0;
-        for (String title : mTitles) {
-            TextView textView = new TextView(this);
-            textView.setText(title);
-            textView.setTextSize(16);
-            textView.setTextColor(Color.WHITE);
-            textView.setId(index++);
-            mTextViews.add(textView);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(8, 0, 12, 0);
-            layoutParams.gravity = Gravity.BOTTOM;
-            titleLayout.addView(textView, layoutParams);
-
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mMainViewPager.setCurrentItem(view.getId());
-                }
-            });
-            mTextViews.get(0).setTextColor(Color.RED);
-        }
+    private void deinitSensor() {
+        SensorWrap.getInstance().deinit();
     }
-
-    private void initDevice() {
-        DeviceManager.getInstance().initDevice(getApplicationContext());
-    }
-
     @AfterPermissionGranted(PERMISSION_REQUEST_CODE)
     public void processPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -132,8 +76,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 startActivity(intent);
             }
         }
-        if (EasyPermissions.hasPermissions(this, mPermissions)) {
-        } else {
+        if (!EasyPermissions.hasPermissions(this, mPermissions)) {
             EasyPermissions.requestPermissions(this, "读取设备的信息",
                     PERMISSION_REQUEST_CODE, mPermissions);
         }

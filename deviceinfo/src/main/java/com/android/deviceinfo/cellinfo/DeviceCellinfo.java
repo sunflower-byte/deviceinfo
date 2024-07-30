@@ -42,9 +42,12 @@ public class DeviceCellinfo {
         TelephonyManager telephonyManager =
                 (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        List<CellInfo> cellInfoList = cellInfoList = telephonyManager.getAllCellInfo();
+        List<CellInfo> cellInfoList = telephonyManager.getAllCellInfo();
 
         for (CellInfo cellInfo : cellInfoList) {
+            if (!cellinfo.isRegistered()) {
+                continue;
+            }
             if (cellInfo instanceof CellInfoGsm) {
                 CellInfoGsm cellInfoGsm = (CellInfoGsm) cellInfo;
                 cellinfoMap.put("type", String.valueOf(1));

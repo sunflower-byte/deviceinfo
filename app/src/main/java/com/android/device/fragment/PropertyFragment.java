@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.device.R;
-import com.android.device.base.DeviceManager;
 import com.android.deviceinfo.property.DevicePropertyManager;
 
 import java.util.ArrayList;
@@ -38,14 +37,15 @@ public class PropertyFragment extends BaseFragment {
 
     private void setupListview() {
         ArrayList<String> arrayList = new ArrayList<>();
-        DevicePropertyManager propertyManager = DeviceManager.getInstance().getDeviceProperty();
+        DevicePropertyManager propertyManager = new DevicePropertyManager(getContext());
         Map<String, String> properties = propertyManager.getProperty();
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             arrayList.add(new String(key + "=" + value));
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.property_item, R.id.property, arrayList);
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(getActivity(), R.layout.property_item, R.id.property, arrayList);
         mListView.setAdapter(adapter);
     }
 }

@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.device.R;
-import com.android.device.base.DeviceManager;
 import com.android.deviceinfo.cellinfo.DeviceCellinfoManager;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class CellinfoFragment extends BaseFragment {
 
     private void setupListview() {
         ArrayList<String> arrayList = new ArrayList<>();
-        DeviceCellinfoManager cellinfoManager = DeviceManager.getInstance().getDeviceCellinfo();
+        DeviceCellinfoManager cellinfoManager = new DeviceCellinfoManager(getContext());
         Map<String, String> cellinfo = cellinfoManager.getCellInfo();
         for (Map.Entry<String, String> entry : cellinfo.entrySet()) {
             String key = entry.getKey();
