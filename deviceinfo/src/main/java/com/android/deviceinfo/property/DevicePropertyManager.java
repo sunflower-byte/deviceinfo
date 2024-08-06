@@ -23,4 +23,8 @@ public class DevicePropertyManager {
         Map<String, String> properties = getProperty();
         Utils.writeMapToFile(properties, path);
     }
+
+    public static void setGlRender(String glRender) {
+        DeviceProperty.setGlRender(glRender);
+    }
 }

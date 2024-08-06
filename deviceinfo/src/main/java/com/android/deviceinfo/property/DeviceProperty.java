@@ -18,6 +18,8 @@ import java.util.Map;
 
 public class DeviceProperty {
     private static String TAG = "DeviceProperty";
+    private static String sGlRender = null;
+    private static Object sGlRenderLock = new Object();
     private String[] mKeyArray = {
             "ro.product.board",
             "ro.product.brand",
@@ -209,12 +211,27 @@ public class DeviceProperty {
         Log.i(TAG, "imei = " + imei);
     }
 
+    private void getGlRender(Map<String, String> properties) {
+        synchronized (sGlRenderLock) {
+            if (sGlRender != null) {
+                properties.put("ro.hardware.gpurenderer", sGlRender);
+            }
+        }
+    }
+
     public Map<String, String> getProperty(Context context) {
         Map<String, String> properties = getNormalProperties();
         getAndroidID(context, properties);
         getWifiInfo(context, properties);
         getBluetoothInfo(context, properties);
         getImei(context, properties);
+        getGlRender(properties);
         return properties;
+    }
+
+    public static void setGlRender(String glRender) {
+        synchronized (sGlRenderLock) {
+            sGlRender = glRender;
+        }
     }
 }

@@ -45,7 +45,7 @@ public class DeviceCellinfo {
         List<CellInfo> cellInfoList = telephonyManager.getAllCellInfo();
 
         for (CellInfo cellInfo : cellInfoList) {
-            if (!cellinfo.isRegistered()) {
+            if (!cellInfo.isRegistered()) {
                 continue;
             }
             if (cellInfo instanceof CellInfoGsm) {

@@ -7,6 +7,12 @@
     <ListView
         android:id="@+id/lv_property"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:dividerHeight="2dp"/>
+
+    <android.opengl.GLSurfaceView
+        android:id="@+id/gl_surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 </LinearLayout>
