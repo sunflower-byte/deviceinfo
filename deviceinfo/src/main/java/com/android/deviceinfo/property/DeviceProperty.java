@@ -149,8 +149,7 @@ public class DeviceProperty {
             "ro.boot.serialno",
             "ro.revision",
             "ro.hard.gpurenderer",
-            "gsm.sim.state",
-            "device.name"
+            "gsm.sim.state"
     };
 
 
